@@ -19,6 +19,7 @@ void CmdProducer::procsCmd()
     m_queueFile->push(m_cmdAcceptor.getCmds());
     m_queue->set_finalized();
     m_queueFile->set_finalized();
+    m_cmdAcceptor.clearProcessd();
 
 //    std::cout <<" finalizing quee "<< std::endl;
     m_bFinished = true;
@@ -27,4 +28,19 @@ void CmdProducer::procsCmd()
 bool CmdProducer::isFinished()
 {
     return m_bFinished;
+}
+
+int CmdProducer::get_total_lines()
+{
+    return m_cmdAcceptor.get_lin_cnt();
+}
+
+int CmdProducer::get_total_cmds()
+{
+    return m_cmdAcceptor.get_cmds_cnt();
+}
+
+int CmdProducer::get_total_blok()
+{
+    return m_cmdAcceptor.get_blok_cnt();
 }

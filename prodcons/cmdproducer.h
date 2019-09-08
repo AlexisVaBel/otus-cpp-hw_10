@@ -10,6 +10,9 @@ public:
 
     void procsCmd();
     bool isFinished();
+    int  get_total_lines();
+    int  get_total_cmds();
+    int  get_total_blok();
 
 private:
     CmdAcceptor m_cmdAcceptor;

@@ -8,6 +8,9 @@
 
 class ConsoleCmdObserver: public ICmdObserver{
 public:
+    ConsoleCmdObserver():m_iBlokCnt(0),
+                     m_iCmdCnt(0){}
+
     ~ConsoleCmdObserver(){
 
     }
@@ -21,14 +24,11 @@ public:
         std::cout << std::endl;
     }
 
-    // ICmdObserver interface
-public:
+
     void onNewCmd(const std::string &str){
         // none command here needed
     }
 
-    // ICmdObserver interface
-public:
     void sharedProcess(CmdProducer *cmd, std::shared_ptr<BulkQueue<std::vector<std::string> > > que){
 //        std::cout << __PRETTY_FUNCTION__ << std::endl;
         bool finished = false;
@@ -36,10 +36,27 @@ public:
             finished = cmd->isFinished() && que->is_empty();
             if(finished) break;
             std::vector<std::string> t = que->pop();
+            if(t.empty()) continue;
             t.pop_back();
+            if(t.empty() || t.size() == 1) continue;
+            ++m_iBlokCnt;
+            m_iCmdCnt+= t.size();
             onCmdReceived(t);
         }
     }
+
+    // ICmdObserver interface
+    int get_blok_cnt(){
+        return m_iBlokCnt;
+    }
+    int get_cmd_cnt(){
+        return m_iCmdCnt;
+    }
+
+private:
+
+    int         m_iBlokCnt;
+    int         m_iCmdCnt;
 };
 
 #endif // CONSOLECMDOBSERVER_H

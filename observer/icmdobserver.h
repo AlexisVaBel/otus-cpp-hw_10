@@ -16,6 +16,9 @@ public:
     virtual void onCmdReceived(const std::vector<std::string> &vct_str) = 0;
     virtual void onNewCmd(const std::string &str) = 0;
     virtual void sharedProcess(CmdProducer *cmd,std::shared_ptr<BulkQueue<std::vector<std::string>>>  que) = 0;
+
+    virtual int  get_blok_cnt() = 0;
+    virtual int  get_cmd_cnt() = 0;
 };
 
 #endif // ICMDOBSERVER_H

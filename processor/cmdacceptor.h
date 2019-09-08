@@ -26,15 +26,13 @@ public:
         if(str.compare("}") == 0){            
             if(m_prms.size() > 0 && m_prms.top().compare("{") == 0)
                 m_prms.pop();
-            if((m_prms.size() == 0 && m_cmds.size() > 0)){
-                ++m_iBlokCnt;
+            if((m_prms.size() == 0 && m_cmds.size() > 0)){                
                 return true;
             }
             return false;
         }
         if(str.empty()) {
             if((m_cmds.size() > 0 && (!m_prms.empty()))){
-                ++m_iBlokCnt;
                 return  true;
             }
             return false;
@@ -43,8 +41,8 @@ public:
         if(m_cmds.empty()) m_strFstCmdArrived = makeTimePrefix();
 
         m_cmds.push_back(str);
-        if(m_cmds.size() >= m_iCnt && m_prms.empty()){
-            ++m_iBlokCnt;
+
+        if(m_cmds.size() >= m_iCnt && m_prms.empty()){            
             return true;
         }
         return false;
@@ -61,9 +59,23 @@ public:
     }
 
     void clearProcessd(){
+        if(m_cmds.size() > 0)
+        ++m_iBlokCnt;
+        m_iCmdsCnt+= m_cmds.size();
         m_cmds.clear();
     }
 
+    int get_lin_cnt(){
+        return m_iLineCnt;
+    }
+
+    int get_cmds_cnt(){
+        return m_iCmdsCnt;
+    }
+
+    int get_blok_cnt(){
+        return m_iBlokCnt;
+    }
 
 private:
     uint        m_iCnt;

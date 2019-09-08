@@ -11,14 +11,11 @@
 class LogCmdObserver:public ICmdObserver{
     // ICmdObserver interface
 public:
+    LogCmdObserver():m_iBlokCnt(0),
+                     m_iCmdCnt(0){}
+
+
     void onNewCmd(const std::string &str){
-//        if(str.empty()) ++iCntHelper;
-//        if(str.compare(strBulkName) == 0){
-//            ++iCntHelper;
-//        }else{
-//            iCntHelper  = 0;
-//            strBulkName = str;
-//        }
     }
 
     void onCmdReceived(const std::vector<std::string> &vct_str)
@@ -45,7 +42,8 @@ private:
         fout.close();        
     }
 
-    int         iCntHelper;
+    int         m_iBlokCnt;
+    int         m_iCmdCnt;
 
     std::string strBulkName;
 
@@ -59,10 +57,22 @@ public:
             finished = cmd->isFinished() && que->is_empty();
             if(finished) break;
             std::vector<std::string> t = que->pop();
+            if(t.empty() || t.size() == 1) continue;
             strBulkName = t.back();
             t.pop_back();
+
+            ++m_iBlokCnt;
+            m_iCmdCnt+= t.size();
+
             onCmdReceived(t);
         }
+    }
+
+    int get_blok_cnt(){
+        return m_iBlokCnt;
+    }
+    int get_cmd_cnt(){
+        return m_iCmdCnt;
     }
 };
 #endif // LOGCMDOBSERVER_H
