@@ -2,6 +2,8 @@
 #define CONSOLECMDOBSERVER_H
 
 #include "icmdobserver.h"
+
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -24,21 +26,20 @@ public:
         std::cout << std::endl;
     }
 
+    void sharedProcess(std::shared_ptr<BulkQueue<std::vector<std::string> > > que){
 
-    void onNewCmd(const std::string &str){
-        // none command here needed
-    }
-
-    void sharedProcess(CmdProducer *cmd, std::shared_ptr<BulkQueue<std::vector<std::string> > > que){
-//        std::cout << __PRETTY_FUNCTION__ << std::endl;
         bool finished = false;
         while(!finished){
-            finished = cmd->isFinished() && que->is_empty();
+
+            finished = que->is_empty() && que->is_finalized();
             if(finished) break;
+
+
             std::vector<std::string> t = que->pop();
             if(t.empty()) continue;
             t.pop_back();
             if(t.empty() || t.size() == 1) continue;
+
             ++m_iBlokCnt;
             m_iCmdCnt+= t.size();
             onCmdReceived(t);
@@ -57,6 +58,7 @@ private:
 
     int         m_iBlokCnt;
     int         m_iCmdCnt;
+
 };
 
 #endif // CONSOLECMDOBSERVER_H

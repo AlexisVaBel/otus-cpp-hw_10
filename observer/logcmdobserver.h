@@ -29,6 +29,32 @@ public:
         writeLog(str);
     }
 
+    void sharedProcess(std::shared_ptr<BulkQueue<std::vector<std::string> > > que){
+        bool finished = false;
+        while(!finished){
+            finished = que->is_empty() && que->is_finalized();
+            if(finished) break;
+
+            std::vector<std::string> t = que->pop();
+            if(t.empty()) continue;
+            strBulkName = t.back();
+            t.pop_back();
+            if(t.empty() || t.size() == 1) continue;
+
+
+            ++m_iBlokCnt;
+            m_iCmdCnt+= t.size();
+
+            onCmdReceived(t);
+        }
+    }
+
+    int get_blok_cnt(){
+        return m_iBlokCnt;
+    }
+    int get_cmd_cnt(){
+        return m_iCmdCnt;
+    }
 
 private:
     std::string makePrefix(){        
@@ -50,29 +76,7 @@ private:
 
 
     // ICmdObserver interface
-public:
-    void sharedProcess(CmdProducer *cmd, std::shared_ptr<BulkQueue<std::vector<std::string> > > que){
-        bool finished = false;
-        while(!finished){
-            finished = cmd->isFinished() && que->is_empty();
-            if(finished) break;
-            std::vector<std::string> t = que->pop();
-            if(t.empty() || t.size() == 1) continue;
-            strBulkName = t.back();
-            t.pop_back();
 
-            ++m_iBlokCnt;
-            m_iCmdCnt+= t.size();
 
-            onCmdReceived(t);
-        }
-    }
-
-    int get_blok_cnt(){
-        return m_iBlokCnt;
-    }
-    int get_cmd_cnt(){
-        return m_iCmdCnt;
-    }
 };
 #endif // LOGCMDOBSERVER_H

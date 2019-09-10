@@ -1,5 +1,5 @@
-#include <observer/consolecmdobserver.h>
-#include <observer/logcmdobserver.h>
+#include "observer/consolecmdobserver.h"
+#include "observer/logcmdobserver.h"
 
 #include "prodcons/cmdproducer.h"
 
@@ -14,18 +14,16 @@ int main(int argc, char ** argv){
     std::shared_ptr<BulkQueue<std::vector<std::string>>>  m_queue(new BulkQueue<std::vector<std::string>>(std::vector<std::string>()));
     std::shared_ptr<BulkQueue<std::vector<std::string>>>  m_queueFile(new BulkQueue<std::vector<std::string>>(std::vector<std::string>()));
 
-    std::unique_ptr<LogCmdObserver> file1 = std::unique_ptr<LogCmdObserver>(new LogCmdObserver());
-    std::unique_ptr<LogCmdObserver> file2 = std::unique_ptr<LogCmdObserver>(new LogCmdObserver());
-
-    std::unique_ptr<ConsoleCmdObserver> log = std::unique_ptr<ConsoleCmdObserver>(new ConsoleCmdObserver());
-
+    std::unique_ptr<LogCmdObserver>         file1 = std::unique_ptr<LogCmdObserver>(new LogCmdObserver());
+    std::unique_ptr<LogCmdObserver>         file2 = std::unique_ptr<LogCmdObserver>(new LogCmdObserver());
+    std::unique_ptr<ConsoleCmdObserver>     log = std::unique_ptr<ConsoleCmdObserver>(new ConsoleCmdObserver());
 
 
 
     CmdProducer producerMain(val, m_queue, m_queueFile);
-    std::thread thr1(&ICmdObserver::sharedProcess, log.get(), &producerMain, m_queue);
-    std::thread thr2(&ICmdObserver::sharedProcess, file1.get(), &producerMain, m_queueFile);
-    std::thread thr3(&ICmdObserver::sharedProcess, file2.get(), &producerMain, m_queueFile);
+    std::thread thr1(&ICmdObserver::sharedProcess, log.get(),   m_queue);
+    std::thread thr2(&ICmdObserver::sharedProcess, file1.get(), m_queueFile);
+//    std::thread thr3(&ICmdObserver::sharedProcess, file2.get(), m_queueFile);
 
     producerMain.procsCmd();
 
@@ -33,7 +31,7 @@ int main(int argc, char ** argv){
 
     thr2.join();
 
-    thr3.join();
+//    thr3.join();
 
     std::cout <<"main thread - "<< producerMain.get_total_lines() << " lines, " << producerMain.get_total_cmds() <<  " commands, "<< producerMain.get_total_blok() << " bloks" << std::endl;
     std::cout <<"log thread - "<<  log->get_cmd_cnt() <<  " commands, "<< log->get_blok_cnt() << " bloks" << std::endl;

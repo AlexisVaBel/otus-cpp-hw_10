@@ -9,8 +9,11 @@ else ($ENV{TRAVIS_BUILD_NUMBER})
  project(${PROJECT_NAME}  VERSION 0.0.1)
 endif ($ENV{TRAVIS_BUILD_NUMBER})
 
-find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+
+
+
 find_package( Threads )
+
 
 
 include_directories(".")
@@ -20,6 +23,8 @@ include_directories("prodcons")
 
 add_executable(${PROJECT_NAME} main.cpp prodcons/cmdproducer.cpp)
 
+
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
         CXX_STANDARD 14
         CXX_STANDARD_REQUIRED ON
@@ -27,9 +32,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
         )
 
 
-    target_link_libraries(${PROJECT_NAME}
-        ${CMAKE_THREAD_LIBS_INIT}
-        )
+
+target_link_libraries(${PROJECT_NAME}
+        ${CMAKE_THREAD_LIBS_INIT}        
+)
 
 
 install (TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
