@@ -9,27 +9,22 @@ else ($ENV{TRAVIS_BUILD_NUMBER})
  project(${PROJECT_NAME}  VERSION 0.0.1)
 endif ($ENV{TRAVIS_BUILD_NUMBER})
 
-
-
-
 find_package( Threads )
 
-
-
 include_directories(".")
-include_directories("observer")
 include_directories("processor")
-include_directories("prodcons")
+include_directories("datahodor")
+include_directories("producer")
+include_directories("consumer")
 
-add_executable(${PROJECT_NAME} main.cpp prodcons/cmdproducer.cpp)
+add_executable(${PROJECT_NAME} main.cpp producer/bulkproducer.cpp consumer/consumtoterminal.cpp consumer/consumtofile.cpp)
 
 
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-        CXX_STANDARD 14
-        CXX_STANDARD_REQUIRED ON
-        COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra"
-        )
+    CXX_STANDARD 14
+    CXX_STANDARD_REQUIRED ON
+    )
 
 
 
@@ -48,5 +43,5 @@ set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
 
 set(CPACK_PACKAGE_CONTACT alexisvabel@gmail.com)
 
-set(CPACK_DEBIAN_PACKAGE_SHLIDEPS ON)
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 include(CPack)
